@@ -1,0 +1,127 @@
+---
+title: "Variational Quantum Eigensolvers: A Practical ML Engineer's Guide"
+date: "2026-03-05"
+summary: "An accessible deep-dive into VQE circuit design, ansatz selection, and ML-guided optimization landscapes for practitioners coming from classical machine learning."
+tags: ["Quantum Computing", "VQE", "Optimization", "Tutorial", "Quantum ML"]
+category: "Quantum ML"
+published: true
+---
+
+## Introduction
+
+The Variational Quantum Eigensolver (VQE) is one of the most promising near-term quantum algorithms — and one of the most misunderstood. If you come from a classical ML background, VQE will feel surprisingly familiar. It's essentially a hybrid optimization loop where a quantum circuit acts as a parameterized function approximator, not unlike a neural network.
+
+In this post, I'll walk through VQE from first principles, with a focus on what ML engineers need to know to make it work in practice.
+
+## What Problem Does VQE Solve?
+
+VQE estimates the ground state energy of a quantum Hamiltonian — the lowest eigenvalue of a Hermitian matrix describing a physical system. This is critical in:
+
+- **Quantum chemistry**: Finding molecular ground states for drug discovery
+- **Materials science**: Predicting properties of new materials
+- **Optimization**: Mapping combinatorial problems to quantum Hamiltonians
+
+The classical exact solution (full configuration interaction) scales exponentially with system size. VQE offers a polynomial-depth circuit alternative.
+
+## The Core Loop
+
+```python
+import numpy as np
+from qiskit.quantum_info import SparsePauliOp
+from scipy.optimize import minimize
+
+# Define the Hamiltonian (e.g., H2 molecule in Pauli basis)
+H = SparsePauliOp.from_list([
+    ("II", -1.0523732),
+    ("IZ",  0.3979374),
+    ("ZI", -0.3979374),
+    ("ZZ", -0.0112801),
+    ("XX",  0.1809270),
+])
+
+def vqe_cost(params, ansatz, hamiltonian, backend):
+    """Compute expectation value <psi(params)|H|psi(params)>"""
+    bound_circuit = ansatz.assign_parameters(params)
+    estimator = Estimator(backend=backend)
+    result = estimator.run([(bound_circuit, hamiltonian)]).result()
+    return result[0].data.evs
+
+# Optimize
+result = minimize(
+    vqe_cost,
+    x0=np.random.uniform(0, 2*np.pi, num_params),
+    method="COBYLA",
+    args=(ansatz, H, backend),
+)
+```
+
+## Choosing an Ansatz
+
+The ansatz is your parameterized quantum circuit — analogous to choosing a neural network architecture. The trade-off is always between **expressibility** (can it represent the ground state?) and **trainability** (can the optimizer find it?).
+
+### Hardware-Efficient Ansatz (HEA)
+
+```python
+from qiskit.circuit.library import EfficientSU2
+
+ansatz = EfficientSU2(num_qubits=4, reps=3, entanglement="linear")
+```
+
+Pros: Shallow circuits, hardware-native gates, fewer noise issues.
+Cons: May not represent the target state efficiently; prone to barren plateaus.
+
+### Chemistry-Inspired Ansatz (UCCSD)
+
+```python
+from qiskit_nature.second_q.mappers import JordanWignerMapper
+from qiskit_nature.second_q.circuit.library import UCCSD
+
+# More problem-specific, but deeper circuits
+ansatz = UCCSD(num_particles, num_spatial_orbitals, mapper=JordanWignerMapper())
+```
+
+## The Barren Plateau Problem
+
+> "Training a VQE without addressing barren plateaus is like training a neural network with vanishing gradients from random initialization — you'll get nowhere."
+
+Barren plateaus are the quantum analogue of vanishing gradients. As circuit depth and qubit count grow, the gradient of the cost function with respect to any parameter becomes exponentially small. My ML-guided initialization approach (from our recent NQI paper) addresses this by using a classical neural network to predict good starting parameters based on Hamiltonian properties.
+
+## ML-Guided Initialization (Our Approach)
+
+The key insight: neighboring Hamiltonians (similar molecular geometries) have similar ground state structures. We train a small transformer model to predict ansatz parameters given a Hamiltonian's Pauli decomposition:
+
+```python
+class HamiltonianEncoder(nn.Module):
+    """Encodes Pauli coefficients → initial VQE parameters"""
+    def __init__(self, pauli_dim, param_dim, d_model=128):
+        super().__init__()
+        self.embed = nn.Linear(pauli_dim, d_model)
+        self.transformer = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(d_model, nhead=4),
+            num_layers=3
+        )
+        self.head = nn.Linear(d_model, param_dim)
+
+    def forward(self, pauli_coeffs):
+        x = self.embed(pauli_coeffs)
+        x = self.transformer(x.unsqueeze(0)).squeeze(0)
+        return self.head(x.mean(dim=0))
+```
+
+In benchmarks across 50 molecular Hamiltonians, this reduced iterations to convergence by 38–52%.
+
+## Practical Tips for ML Engineers
+
+1. **Start with 4-8 qubits** — real hardware noise makes larger systems unreliable on NISQ
+2. **Use parameter shift rule** for gradients — it's exact, unlike finite differences
+3. **Warm start with classical methods** — HF or MP2 energies give good parameter priors
+4. **Monitor the cost landscape** — plot the loss surface before full optimization
+5. **Embrace noise as regularization** — sometimes noise actually helps avoid barren plateaus
+
+## What's Next
+
+In my next post, I'll cover how to extend this to the Quantum Approximate Optimization Algorithm (QAOA) for combinatorial problems, and show our results on a logistics routing problem that outperformed classical solvers at 20 variables.
+
+---
+
+*Have questions or want to collaborate on VQE implementations? Reach out via the [contact page](/contact).*

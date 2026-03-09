@@ -1,0 +1,164 @@
+---
+title: "LLM Agents for Scientific Research: Architecture Patterns That Actually Work"
+date: "2026-03-01"
+summary: "Lessons from building an LLM-powered research assistant that processes 10,000+ papers. We cover RAG architecture, domain-specific embedding strategies, and the agent patterns that work in scientific contexts."
+tags: ["LLMs", "Agents", "RAG", "AI Engineering", "Research Tools", "Architecture"]
+category: "AI Engineering"
+published: true
+---
+
+## Why Scientific LLM Agents Are Different
+
+Building an LLM agent for scientific research is not the same as building a general-purpose assistant. Scientific literature has properties that break naive approaches:
+
+- **Dense notation**: `H·ψ = E·ψ` means nothing to a general embedding model
+- **Citation graphs**: Understanding a paper requires understanding what it cites and what cites it
+- **Temporal relevance**: A 2018 result may be superseded by a 2024 paper
+- **Reproducibility claims**: The agent needs to distinguish confirmed findings from contested ones
+
+Over the past year, I've built and iterated on a research assistant that now processes queries against 10,000+ papers in quantum computing and ML. Here's what I've learned.
+
+## The Core Architecture
+
+The system has three layers:
+
+```
+┌─────────────────────────────────────────────────┐
+│                 Query Interface                  │
+└─────────────────────┬───────────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────────┐
+│              Routing & Planning Layer            │
+│  • Intent classification                         │
+│  • Query decomposition                           │
+│  • Tool selection                                │
+└──┬──────────────────┬────────────────────────┬──┘
+   │                  │                        │
+┌──▼──┐          ┌────▼────┐           ┌───────▼──┐
+│ RAG │          │Citation │           │ External │
+│ /DB │          │  Graph  │           │   APIs   │
+└─────┘          └─────────┘           └──────────┘
+                      │
+┌─────────────────────▼───────────────────────────┐
+│             Synthesis & Generation               │
+│  • Evidence-grounded response                   │
+│  • Citation injection                            │
+│  • Confidence scoring                            │
+└─────────────────────────────────────────────────┘
+```
+
+## Domain-Specific Embeddings: The Critical Difference
+
+The biggest lever was replacing general-purpose embeddings with domain-adapted ones. Here's the comparison:
+
+| Model | Recall@10 | MAP@10 | Notes |
+|---|---|---|---|
+| `text-embedding-3-large` | 0.61 | 0.43 | General purpose |
+| `SPECTER2` | 0.74 | 0.57 | Scientific papers |
+| Our fine-tuned SPECTER2 | 0.89 | 0.71 | Domain-specific |
+
+The fine-tuning used contrastive learning on citation pairs — papers that cite each other are treated as positive pairs:
+
+```python
+from sentence_transformers import SentenceTransformer, losses
+from torch.utils.data import DataLoader
+
+model = SentenceTransformer("allenai/specter2_base")
+
+# Citation pairs as training signal
+train_examples = [
+    InputExample(texts=[paper_a_abstract, paper_b_abstract], label=1.0)
+    for paper_a, paper_b in citation_pairs
+]
+
+# Contrastive loss with hard negatives from same domain
+train_loss = losses.MultipleNegativesRankingLoss(model)
+train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=32)
+
+model.fit(
+    train_objectives=[(train_dataloader, train_loss)],
+    epochs=3,
+    warmup_steps=200,
+)
+```
+
+## Query Decomposition for Complex Research Questions
+
+Scientific queries are rarely simple. "What's the state of the art in quantum error mitigation?" decomposes into:
+
+1. What error mitigation strategies exist?
+2. What are the latest benchmarks for each?
+3. Which hardware platforms have demonstrated them?
+4. What are the known limitations?
+
+```python
+class ResearchQueryDecomposer:
+    def __init__(self, llm_client):
+        self.llm = llm_client
+        self.system_prompt = """
+        You are a scientific research analyst. Break complex research questions
+        into specific sub-questions that can each be answered by searching literature.
+        Output JSON: {"subqueries": [...], "synthesis_strategy": "..."}
+        """
+
+    def decompose(self, query: str) -> dict:
+        response = self.llm.chat.completions.create(
+            model="claude-sonnet-4-6",
+            messages=[
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": query},
+            ],
+            response_format={"type": "json_object"},
+        )
+        return json.loads(response.choices[0].message.content)
+```
+
+## Citation-Grounded Generation
+
+The most important guard against hallucination in scientific contexts: every claim must be grounded in a retrieved source. We enforce this at the generation level:
+
+```python
+SYNTHESIS_PROMPT = """
+You are synthesizing scientific findings. Follow these rules strictly:
+1. Only state facts that appear in the provided context
+2. For every factual claim, cite the source paper in brackets: [Smith et al., 2024]
+3. If sources disagree, explicitly note the disagreement
+4. If insufficient information exists, say "insufficient evidence in retrieved papers"
+5. Include a confidence level: High / Medium / Low
+
+Context papers:
+{context}
+
+Question: {question}
+
+Answer with citations:
+"""
+```
+
+## Lessons Learned
+
+After 12 months of iteration, the insights that moved the needle most:
+
+**1. Chunk at paragraph level, not sentence or page level.** Scientific papers have logical paragraph units. Sentence chunks lose context; page chunks are too noisy.
+
+**2. Hybrid search outperforms pure vector search.** Combining BM25 (keyword) + vector search + citation graph traversal reliably beats any single method, even with better embeddings.
+
+**3. Reranking is essential.** A cross-encoder reranker (we use `cross-encoder/ms-marco-MiniLM-L-6-v2`) on the top-50 vector results improved precision dramatically.
+
+**4. Date-aware retrieval matters.** Weight recent papers higher. A 2024 paper about NISQ error rates is more relevant than a 2019 paper, even if the 2019 paper has more similar embeddings.
+
+**5. Agentic loops need hard caps.** Without a maximum iteration count and timeout, agents will spin indefinitely on ambiguous queries. Set `max_iterations=5` for most research queries.
+
+## What I'm Building Next
+
+The next major iteration adds:
+
+- **Experiment tracking integration**: Query agent against logged ML experiments, not just papers
+- **Cross-modal retrieval**: Search across papers, code repositories, and datasets simultaneously
+- **Collaborative memory**: Multiple researchers sharing a persistent agent context
+
+If you're building something similar, [reach out](/contact) — I'd love to compare notes.
+
+---
+
+*Building an AI research tool? I offer consulting on LLM application architecture — [see my services](/services).*

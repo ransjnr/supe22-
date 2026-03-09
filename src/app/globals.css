@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #FAFAF8;
+    --foreground: #1a1a2e;
+    --accent: #1e3a5f;
+    --gold: #C9A227;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  ::selection {
+    background-color: #C9A227;
+    color: #ffffff;
+  }
+
+  /* Dot grid pattern for hero */
+  .dot-grid {
+    background-image: radial-gradient(circle, #1e3a5f18 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FAFAF8;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #C9A22750;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #C9A227;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-max {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-accent text-white font-medium rounded-sm
+           transition-colors duration-200 text-sm tracking-wide;
+  }
+  .btn-primary:hover {
+    background-color: rgb(30 58 95 / 0.9);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-6 py-3 border border-accent text-accent font-medium rounded-sm
+           transition-colors duration-200 text-sm tracking-wide;
+  }
+  .btn-ghost:hover {
+    background-color: rgb(30 58 95 / 0.05);
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-gold text-white font-medium rounded-sm
+           transition-colors duration-200 text-sm tracking-wide;
+  }
+  .btn-gold:hover {
+    background-color: rgb(201 162 39 / 0.9);
+  }
+
+  .tag-pill {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-accent border;
+    background-color: rgb(30 58 95 / 0.08);
+    border-color: rgb(30 58 95 / 0.15);
+  }
+
+  .section-label {
+    @apply text-xs font-semibold tracking-widest uppercase text-gold;
+  }
+
+  .section-heading {
+    @apply font-serif text-3xl md:text-4xl text-primary-text leading-tight;
+  }
+
+  .card-base {
+    @apply bg-card border border-border-subtle rounded-sm p-6
+           hover:shadow-md transition-shadow duration-200;
+  }
+}

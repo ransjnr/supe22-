@@ -1,0 +1,68 @@
+import type { Achievement } from "@/types";
+
+export const achievements: Achievement[] = [
+  {
+    id: "nqis-fellowship",
+    title: "National Quantum Information Science Fellowship",
+    issuer: "Department of Energy",
+    year: "2024",
+    type: "grant",
+    description: "Competitive fellowship supporting quantum computing research with focus on near-term NISQ algorithms.",
+  },
+  {
+    id: "neurips-workshop-best-paper",
+    title: "Best Paper Award — Quantum ML Workshop",
+    issuer: "NeurIPS 2024",
+    year: "2024",
+    type: "award",
+    description: "Recognized for outstanding contribution to the workshop on Quantum Machine Learning.",
+  },
+  {
+    id: "icml-spotlight",
+    title: "ICML Spotlight Presentation",
+    issuer: "International Conference on Machine Learning",
+    year: "2023",
+    type: "recognition",
+    description: "Top 5% of accepted papers selected for spotlight presentation at ICML 2023.",
+  },
+  {
+    id: "mit-visiting-researcher",
+    title: "MIT CSAIL Visiting Researcher",
+    issuer: "MIT Computer Science & Artificial Intelligence Laboratory",
+    year: "2024",
+    type: "recognition",
+    description: "Invited visiting researcher position focusing on quantum-classical hybrid algorithms.",
+  },
+  {
+    id: "africa-innovation-award",
+    title: "Africa Innovation in Technology Award",
+    issuer: "African Union Science & Technology Commission",
+    year: "2023",
+    type: "award",
+    description: "Recognized for contributions to advancing AI/ML capabilities across African research institutions.",
+  },
+  {
+    id: "500-github-stars",
+    title: "500+ GitHub Stars on OpenPINN",
+    issuer: "GitHub Community",
+    year: "2024",
+    type: "milestone",
+    description: "Open-source physics-informed neural network library reached 500+ community stars.",
+  },
+  {
+    id: "phys-rev-applied",
+    title: "Physical Review Applied Publication",
+    issuer: "American Physical Society",
+    year: "2024",
+    type: "milestone",
+    description: "Research on quantum noise mitigation published in high-impact APS journal.",
+  },
+  {
+    id: "google-deepmind-grant",
+    title: "Google DeepMind Academic Research Grant",
+    issuer: "Google DeepMind",
+    year: "2023",
+    type: "grant",
+    description: "Research grant supporting work on Physics-informed neural networks for scientific simulation.",
+  },
+];
