@@ -1,0 +1,63 @@
+---
+title: "HALO-UNet: How I Built a Lightweight Medical AI That Runs on Almost Nothing"
+date: "2025-08-20"
+summary: "A deep dive into designing HALO-UNet — a multistage deep learning framework for thyroid nodule segmentation that achieves 71% Dice score while running 70% faster than baseline UNet on resource-constrained hardware."
+tags: ["Medical AI", "Deep Learning", "Image Segmentation", "UNet", "Healthcare"]
+category: "Research"
+published: true
+---
+
+## The Problem: Medical AI That Can't Go Anywhere
+
+Most medical AI research is built to impress on benchmark leaderboards, not to run in a Ghanaian district hospital with one aging GPU and inconsistent power supply.
+
+When I started working on thyroid nodule segmentation for my BSc thesis at KNUST, the gap was obvious. State-of-the-art models like TransUNet achieved impressive Dice scores — but demanded compute that doesn't exist in most African clinical settings. A tool that can't deploy isn't a tool. It's a paper.
+
+My goal was simple: build something that works well enough to be clinically useful, and runs fast enough to actually be deployed.
+
+## The Architecture: Multistage + Hardware-Aware
+
+HALO-UNet is built around three ideas:
+
+**1. Lightweight multistage design.** Rather than a single deep encoder-decoder, HALO-UNet processes ultrasound images through staged feature extraction with progressive refinement. Each stage captures coarser-to-finer representations of the nodule boundary without stacking layers until the model can't fit in memory.
+
+**2. Hardware-aware optimization pipeline.** After training, the model goes through a three-phase optimization:
+- Dynamic preprocessing to normalize inconsistent ultrasound acquisition artifacts
+- Structured pruning to remove redundant filters
+- Post-training quantization (INT8) to cut memory footprint and inference latency
+
+**3. Validated on real clinical data.** I trained on two public datasets (TN3K and DDTI) covering over 3,000 ultrasound images, then validated on 150+ real patient scans. This is where most papers stop at the public benchmark — but clinical relevance means testing on the messy, inconsistent data from actual imaging equipment.
+
+## Results
+
+The numbers came out better than I expected:
+
+| Model | Dice Score | IoU | Inference Time |
+|-------|-----------|-----|----------------|
+| Baseline UNet | 62.3% | 50.1% | 180ms |
+| DeepLabV3+ | 66.1% | 53.7% | 210ms |
+| TransUNet | 68.9% | 57.2% | 340ms |
+| **HALO-UNet** | **71.0%** | **58.4%** | **52ms** |
+
+The inference time improvement was the real win. More than 70% faster than TransUNet while achieving better Dice — on the same hardware. That's what makes it deployable.
+
+## Deployment
+
+After defending the thesis, I deployed HALO-UNet to Hugging Face Inference Endpoints:
+
+```python
+from huggingface_hub import InferenceClient
+
+client = InferenceClient("ransjnr/halo-unet")
+result = client.image_segmentation("thyroid_scan.jpg")
+```
+
+The public endpoint means any clinician or researcher can test it without setting up infrastructure. Try it at [huggingface.co/spaces/ransjnr/halo-unet](https://huggingface.co/spaces/ransjnr/halo-unet).
+
+## What I Learned
+
+The biggest lesson wasn't technical — it was about the difference between research and engineering. A model that gets one more percentage point on a benchmark but needs 3x the compute is worse than a simpler model in any context where resources are constrained.
+
+Africa doesn't need to wait for affordable compute to use medical AI. We need AI designed for the compute we have.
+
+The next phase of this work is multi-hospital validation across Ghana and integration with point-of-care ultrasound devices. If you're a radiologist, clinician, or research institution in Africa and want to collaborate, reach out.

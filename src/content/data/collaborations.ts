@@ -2,47 +2,47 @@ import type { CollaborationOpportunity } from "@/types";
 
 export const collaborations: CollaborationOpportunity[] = [
   {
-    id: "quantum-algorithms",
-    title: "Quantum Algorithm Development for ML",
-    area: "Quantum Machine Learning",
+    id: "quantum-biosensor-research",
+    title: "Quantum Photonics & Biosensor Research",
+    area: "Quantum Computing / Biomedical Engineering",
     description:
-      "Looking to collaborate on developing novel quantum algorithms that provide provable speedups for ML tasks. Particularly interested in quantum kernel methods and variational algorithms.",
+      "Actively developing GQD-integrated photonic biosensors for point-of-care diagnostics using IBM Qiskit simulations. Looking to collaborate on experimental validation, wet-lab integration, and clinical deployment of quantum-simulated biosensor models for African healthcare contexts.",
     ideal:
-      "Quantum computing researcher with experience in circuit design, or ML researcher interested in quantum approaches.",
-    commitment: "6-12 months, remote-friendly",
+      "Experimental physicist, biomedical engineer, or clinical researcher with access to photonics or biosensing equipment. Interest in quantum simulation and low-resource diagnostics a plus.",
+    commitment: "6–12 months, remote-friendly with in-person collaboration welcome",
     open: true,
   },
   {
-    id: "climate-pinn",
-    title: "Physics-Informed ML for Climate Modeling",
-    area: "Physics-ML / Climate Science",
+    id: "medical-ai-collaboration",
+    title: "Medical AI & Clinical Decision Support",
+    area: "Medical Imaging / AI",
     description:
-      "Collaboration on applying physics-informed neural networks to improve climate model resolution and accuracy. Aiming for journal publication and potential conference presentation.",
+      "Building on HALO-UNet and PSMT research to develop clinically deployable AI tools for low-resource African healthcare settings. Seeking collaborators for dataset acquisition, multi-hospital validation, and real-world deployment studies.",
     ideal:
-      "Climate scientist or atmospheric physicist with access to simulation data. ML background a bonus but not required.",
-    commitment: "8-12 months, mixed remote/in-person",
+      "Radiologist, clinical AI researcher, or hospital partner in Ghana or Africa with access to imaging datasets. ML engineers with experience in medical segmentation also welcome.",
+    commitment: "8–12 months, mixed remote/in-person",
     open: true,
   },
   {
-    id: "ai-drug-discovery",
-    title: "Quantum-Enhanced Drug Discovery Pipeline",
-    area: "Quantum ML / Computational Biology",
+    id: "ai-africa-education",
+    title: "AI Curriculum & Education for Africa",
+    area: "Education / AI Engineering",
     description:
-      "Building a hybrid quantum-classical pipeline for molecular property prediction and drug candidate screening. Targeting top computational chemistry venues.",
+      "Developing open-access, locally-relevant AI and ML curricula for African universities and bootcamps — rooted in African use cases, healthcare, agritech, and governance contexts. Currently expanding the AI Agents & Workflow Automation workshop to institutional partners.",
     ideal:
-      "Computational chemist or bioinformatician. Experience with molecular dynamics or quantum chemistry a plus.",
-    commitment: "12 months",
-    open: true,
-  },
-  {
-    id: "ml-education-africa",
-    title: "ML Curriculum Development for African Universities",
-    area: "Education / AI",
-    description:
-      "Developing comprehensive, locally-relevant ML and AI curricula for African universities. Goal is to create open-access materials that reflect African scientific contexts.",
-    ideal:
-      "Educator or researcher at an African institution passionate about science education and open-source learning.",
+      "Educator, curriculum designer, or researcher at an African institution passionate about democratizing AI education. Experience with no-code tools, Python, or LLMs a bonus.",
     commitment: "6 months, fully remote",
+    open: true,
+  },
+  {
+    id: "fintech-ai-africa",
+    title: "AI-Powered Fintech for African Markets",
+    area: "AI / Fintech / Product",
+    description:
+      "Building MentisMint as the first AI personal finance platform that works in Africa. Looking for technical co-founders, ML engineers, or fintech domain experts who understand African payment systems, mobile money APIs, and informal economy financial patterns.",
+    ideal:
+      "ML engineer, fintech developer, or product designer with experience in African financial systems (MTN MoMo, Flutterwave, Paystack, etc.) and a passion for financial inclusion.",
+    commitment: "Long-term, equity-based",
     open: true,
   },
 ];

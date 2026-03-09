@@ -1,8 +1,8 @@
 import type { SiteStats } from "@/types";
 
 export const stats: SiteStats = {
-  yearsExperience: 6,
-  projectsCompleted: 30,
-  papersPublished: 7,
-  countriesReached: 25,
+  yearsExperience: 4,
+  projectsCompleted: 20,
+  papersPublished: 3,
+  countriesReached: 5,
 };

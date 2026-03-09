@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { Github, ExternalLink, FileText, Clock } from "lucide-react";
+import { Github, ExternalLink, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Project } from "@/types";
 
@@ -29,92 +29,142 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     <motion.div
       whileHover={{ y: -4, boxShadow: "0 12px 40px rgba(30,58,95,0.10)" }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="card-base flex flex-col h-full group"
+      className="card-base flex flex-col h-full group overflow-hidden p-0"
     >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <span
-          className={cn(
-            "inline-flex text-xs font-semibold px-2 py-0.5 rounded-full border",
-            CATEGORY_COLORS[project.category]
-          )}
-        >
-          {project.category}
-        </span>
-        <div className="flex items-center gap-2">
-          <span
-            className={cn(
-              "inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium",
-              STATUS_COLORS[project.status]
-            )}
-          >
-            {project.status === "active" && (
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            )}
-            {project.status}
-          </span>
-          <span className="text-xs text-primary-text/40">{project.year}</span>
+      {/* Thumbnail */}
+      {project.thumbnail && (
+        <div className="relative w-full h-44 overflow-hidden bg-accent/5">
+          <Image
+            src={project.thumbnail}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+          {/* Category badge over image */}
+          <div className="absolute top-3 left-3">
+            <span
+              className={cn(
+                "inline-flex text-xs font-semibold px-2 py-0.5 rounded-full border bg-white/90 backdrop-blur-sm",
+                CATEGORY_COLORS[project.category]
+              )}
+            >
+              {project.category}
+            </span>
+          </div>
+          {/* Status + year over image */}
+          <div className="absolute top-3 right-3 flex items-center gap-2">
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium bg-white/90 backdrop-blur-sm",
+                STATUS_COLORS[project.status]
+              )}
+            >
+              {project.status === "active" && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              )}
+              {project.status}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Title + Description */}
-      <h3 className="font-serif text-lg text-primary-text mb-2 leading-snug group-hover:text-accent transition-colors">
-        {project.title}
-      </h3>
-      <p className="text-sm text-primary-text/70 leading-relaxed mb-4 flex-1">
-        {project.description}
-      </p>
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-5">
+        {/* Header (only shown when no thumbnail) */}
+        {!project.thumbnail && (
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <span
+              className={cn(
+                "inline-flex text-xs font-semibold px-2 py-0.5 rounded-full border",
+                CATEGORY_COLORS[project.category]
+              )}
+            >
+              {project.category}
+            </span>
+            <div className="flex items-center gap-2">
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium",
+                  STATUS_COLORS[project.status]
+                )}
+              >
+                {project.status === "active" && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                )}
+                {project.status}
+              </span>
+              <span className="text-xs text-primary-text/40">{project.year}</span>
+            </div>
+          </div>
+        )}
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {project.tags.slice(0, 4).map((tag) => (
-          <span key={tag} className="tag-pill">
-            {tag}
-          </span>
-        ))}
-        {project.tags.length > 4 && (
-          <span className="tag-pill">+{project.tags.length - 4}</span>
+        {/* Year (shown below image) */}
+        {project.thumbnail && (
+          <span className="text-xs text-primary-text/40 mb-1">{project.year}</span>
         )}
-      </div>
 
-      {/* Links */}
-      <div className="flex items-center gap-3 pt-3 border-t border-border-subtle">
-        {project.github && (
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-            className="flex items-center gap-1.5 text-xs text-primary-text/60 hover:text-accent transition-colors"
-          >
-            <Github size={14} />
-            Code
-          </a>
-        )}
-        {project.demo && (
-          <a
-            href={project.demo}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Live Demo"
-            className="flex items-center gap-1.5 text-xs text-primary-text/60 hover:text-accent transition-colors"
-          >
-            <ExternalLink size={14} />
-            Demo
-          </a>
-        )}
-        {project.paper && (
-          <a
-            href={project.paper}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Paper"
-            className="flex items-center gap-1.5 text-xs text-primary-text/60 hover:text-accent transition-colors"
-          >
-            <FileText size={14} />
-            Paper
-          </a>
-        )}
+        {/* Title + Description */}
+        <h3 className="font-serif text-lg text-primary-text mb-2 leading-snug group-hover:text-accent transition-colors">
+          {project.title}
+        </h3>
+        <p className="text-sm text-primary-text/70 leading-relaxed mb-4 flex-1">
+          {project.description}
+        </p>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {project.tags.slice(0, 4).map((tag) => (
+            <span key={tag} className="tag-pill">
+              {tag}
+            </span>
+          ))}
+          {project.tags.length > 4 && (
+            <span className="tag-pill">+{project.tags.length - 4}</span>
+          )}
+        </div>
+
+        {/* Links */}
+        <div className="flex items-center gap-3 pt-3 border-t border-border-subtle">
+          {project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="flex items-center gap-1.5 text-xs text-primary-text/60 hover:text-accent transition-colors"
+            >
+              <Github size={14} />
+              Code
+            </a>
+          )}
+          {project.demo && (
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Live Demo"
+              className="flex items-center gap-1.5 text-xs text-primary-text/60 hover:text-accent transition-colors"
+            >
+              <ExternalLink size={14} />
+              Demo
+            </a>
+          )}
+          {project.paper && (
+            <a
+              href={project.paper}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Paper"
+              className="flex items-center gap-1.5 text-xs text-primary-text/60 hover:text-accent transition-colors"
+            >
+              <FileText size={14} />
+              Paper
+            </a>
+          )}
+        </div>
       </div>
     </motion.div>
   );

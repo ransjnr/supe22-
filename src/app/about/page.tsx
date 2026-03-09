@@ -12,10 +12,12 @@ export const metadata: Metadata = {
 };
 
 const TECH_STACK = [
-  { category: "AI/ML", items: ["PyTorch", "JAX", "Transformers", "Scikit-learn", "MLflow"] },
-  { category: "Quantum", items: ["Qiskit", "PennyLane", "Cirq", "QuTiP", "OpenFermion"] },
-  { category: "Engineering", items: ["Python", "TypeScript", "FastAPI", "Docker", "Kubernetes"] },
-  { category: "Data & Cloud", items: ["PostgreSQL", "Redis", "AWS", "GCP", "Spark"] },
+  { category: "AI/ML", items: ["PyTorch", "TensorFlow", "MONAI", "Autogen", "LangChain", "HuggingFace"] },
+  { category: "Quantum", items: ["IBM Qiskit", "Quantum Simulation", "Photonics", "GQD Circuits"] },
+  { category: "Engineering", items: ["Python", "TypeScript", "Next.js", "Node.js", "FastAPI", "Django"] },
+  { category: "Data & Cloud", items: ["MongoDB", "PostgreSQL", "ConvexDB", "Azure", "AWS", "Firebase"] },
+  { category: "Automation", items: ["Zapier", "Make.com", "n8n", "Langflow", "Flowise", "CI/CD"] },
+  { category: "Mobile & Web", items: ["React Native", "AngularJS", "PHP", "REST API", "GraphQL"] },
 ];
 
 const TYPE_COLORS = {
@@ -45,12 +47,12 @@ export default function AboutPage() {
               <div className="mt-6 space-y-3">
                 <div className="flex items-center gap-2 text-sm text-primary-text/70">
                   <MapPin size={15} className="text-gold" />
-                  Remote · Available worldwide
+                  Kumasi, Ghana · Available worldwide
                 </div>
                 <div className="flex items-center gap-2 text-sm text-primary-text/70">
                   <Mail size={15} className="text-gold" />
-                  <a href="mailto:hello@ransfordoppong.com" className="hover:text-accent transition-colors">
-                    hello@ransfordoppong.com
+                  <a href="mailto:oppong.rans@gmail.com" className="hover:text-accent transition-colors">
+                    oppong.rans@gmail.com
                   </a>
                 </div>
               </div>
@@ -60,28 +62,32 @@ export default function AboutPage() {
             <div className="lg:col-span-3">
               <p className="section-label mb-3">About Me</p>
               <h1 className="font-serif text-4xl md:text-5xl text-primary-text mb-6 leading-tight">
-                Building at the frontier of AI, quantum, and physics
+                Building at the frontier of AI, quantum, and biomedical engineering
               </h1>
               <div className="prose prose-sm max-w-none text-primary-text/75 space-y-4 leading-relaxed">
                 <p>
-                  I&apos;m Ransford Oppong — an AI engineer, researcher, and founder who operates at the unusual
-                  intersection of machine learning, quantum computing, and physical sciences. My work is driven by a
-                  conviction that the most important problems in AI require both mathematical depth and engineering rigor.
+                  I&apos;m Ransford Oppong — AI software engineer, biomedical engineering graduate, researcher, and
+                  founder based in Kumasi, Ghana. By day, I train machines to think. By night, I convince them I&apos;m
+                  still in charge. I operate at the intersection of AI engineering, quantum computing, and medical
+                  technology — bringing production-grade rigor to frontier research problems.
                 </p>
                 <p>
-                  Over six years, I&apos;ve developed expertise across domains that rarely overlap: training physics-informed
-                  neural networks to solve differential equations that govern fluid dynamics, building variational quantum
-                  circuits that outperform classical optimizers on molecular simulation, and architecting production AI
-                  systems that serve real-world applications at scale.
+                  My research spans Quantum ML and photonics (GQD biosensors for neonatal sepsis diagnostics, quantum
+                  threat modelling), medical AI (HALO-UNet for thyroid nodule segmentation, Polymorphic Self-Modifying
+                  Transformers for adaptive clinical decision support), and assistive technologies (GSL emotion
+                  recognition engines for deaf communities). I work under Prof. Jerry John Kponyo at the QCAT Lab, KNUST.
                 </p>
                 <p>
-                  I&apos;ve published in venues including <em>Nature Quantum Information</em>, <em>Physical Review Applied</em>,
-                  and ICML. I co-founded two startups in the AI space, built open-source tools with hundreds of users, and
-                  I mentor researchers across Africa through my education initiative Physics-ML Africa.
+                  On the engineering side, I&apos;ve architected and shipped production systems across fintech,
+                  healthtech, and education — including Pollix (secure e-voting), WangaChat (enterprise comms), grad.ai
+                  (AI grad school applications), and MentisMint (AI personal finance for Africa). I founded BUILD SCITECH
+                  and lead a community of 600+ African student developers and builders.
                 </p>
                 <p>
-                  I&apos;m available for consulting engagements, research collaborations, and speaking opportunities. If
-                  you&apos;re working on something at the frontier, I&apos;d love to hear about it.
+                  I&apos;ve presented research at PA-AISS 2025 (KNUST), iN4iN 2025 (Leipzig), and IFA Berlin 2025. I
+                  design and deliver workshops on AI Agents & Workflow Automation for professionals and organizations.
+                  I&apos;m available for consulting, research collaborations, and speaking. If you&apos;re working at
+                  the frontier — especially in Africa — I&apos;d love to connect.
                 </p>
               </div>
             </div>
@@ -95,7 +101,7 @@ export default function AboutPage() {
           <AnimatedSection>
             <SectionHeader label="Toolkit" heading="Technologies & Tools" className="mb-10" />
           </AnimatedSection>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {TECH_STACK.map((stack, i) => (
               <AnimatedSection key={stack.category} delay={i * 0.08}>
                 <div className="card-base">

@@ -2,41 +2,40 @@ import type { Initiative } from "@/types";
 
 export const initiatives: Initiative[] = [
   {
-    id: "quantum-ml-collective",
-    name: "Quantum ML Collective",
-    tagline: "Bridging quantum computing and machine learning research",
+    id: "ai-automation-course",
+    name: "AI Agents & Workflow Automation",
+    tagline: "8-week hybrid workshop — from AI tinkering to enterprise-grade agents",
     description:
-      "An open research initiative bringing together quantum computing and ML researchers to develop practical quantum ML algorithms. We share code, datasets, and findings openly.",
+      "An 8-week hybrid workshop designed for professionals, founders, and freelancers to move beyond basic AI prompting into building real, automated enterprise systems. Curriculum covers automation opportunity spotting, workflow mapping, agent deployment, multi-step logic, and enterprise integrations using ChatGPT, Zapier, Make.com, n8n, and LangChain. All learners receive free ChatGPT Team and Zapier access.",
     status: "active",
-    link: "https://github.com/quantum-ml-collective",
-    tags: ["Quantum ML", "Open Source", "Research", "Community"],
+    tags: ["AI Agents", "Automation", "No-Code", "Education", "Zapier", "LangChain"],
   },
   {
-    id: "physicsml-africa",
-    name: "Physics-ML Africa",
-    tagline: "Scientific machine learning education across Africa",
+    id: "next-gen-tech-giants-initiative",
+    name: "Next Generation of Tech Giants",
+    tagline: "Technology Transfer Program for African student builders",
     description:
-      "A mentorship and education program training the next generation of African scientists in physics-informed machine learning. Features workshops, online courses, and research collaboration.",
+      "A mentorship and technology transfer initiative under BUILD SCITECH, supervising 10+ student-led research projects in health, climate, biotech, and energy innovation. Hosts weekly Technical Workshops on agentic system development and facilitates exposure to real-world engineering challenges. Community of 600+ African student developers and founders.",
     status: "active",
-    tags: ["Education", "Africa", "Physics-ML", "Mentorship"],
+    link: "https://buildscitech.org",
+    tags: ["Mentorship", "Africa", "AI Education", "Student Research", "Tech Transfer"],
   },
   {
-    id: "open-pinn",
-    name: "OpenPINN",
-    tagline: "Open-source physics-informed neural network library",
+    id: "qcat-lab-research",
+    name: "QCAT Lab Research Program",
+    tagline: "Quantum computing meets assistive technologies at KNUST",
     description:
-      "A community-driven Python library making physics-informed neural networks accessible to scientists and engineers without deep ML expertise. 500+ GitHub stars.",
+      "Active research program at the Quantum Computing and Assistive Technologies (QCAT) Lab, KNUST. Current projects include: a multimodal emotion recognition engine for Ghanaian Sign Language platforms, a GQD photonic biosensor for neonatal sepsis diagnostics, and the HNDL quantum threat model for social media privacy. Supervised by Prof. Jerry John Kponyo.",
     status: "active",
-    link: "https://github.com/openpinn",
-    tags: ["Open Source", "PINNs", "Python", "Scientific ML"],
+    tags: ["Quantum Computing", "Assistive Tech", "Medical AI", "Biosensors", "Ghana", "Research"],
   },
   {
-    id: "ai-for-science",
-    name: "AI for Science Summit",
-    tagline: "Annual conference on AI applications in the physical sciences",
+    id: "encode-africa-education",
+    name: "Encode Africa — Education Division",
+    tagline: "Building Africa's next generation of blockchain and AI developers",
     description:
-      "Co-organized annual summit bringing industry AI researchers and physical scientists together to accelerate scientific discovery through machine learning.",
-    status: "forming",
-    tags: ["Conference", "AI", "Science", "Networking"],
+      "Leading the Education Division at Encode Africa, designing and delivering curriculum on emerging technologies including AI, computer vision, IoT, and robotics for African student developers. Bridging the gap between theoretical education and production-grade engineering skills.",
+    status: "active",
+    tags: ["Education", "Africa", "Blockchain", "AI", "IoT", "Curriculum"],
   },
 ];

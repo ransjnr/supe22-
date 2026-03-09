@@ -1,0 +1,64 @@
+---
+title: "Polymorphic Self-Modifying Transformers: When Your AI Model Rewires Itself"
+date: "2025-10-15"
+summary: "An introduction to PSMT — a transformer architecture that dynamically modifies its own weights and topology during inference, achieving 37.4% better diagnostic generalization and 2.6x faster convergence on medical benchmarks."
+tags: ["Transformers", "Medical AI", "Meta-Learning", "DARTS", "Clinical AI"]
+category: "Research"
+published: true
+---
+
+## The Problem with Static Models in Medicine
+
+Clinical environments are not static. Patient populations shift. Imaging protocols change. Disease presentations evolve as new variants emerge and demographics shift. A diagnostic AI trained on 2023 hospital data will quietly degrade through 2024 without anyone noticing until a missed diagnosis surfaces.
+
+This is called **distribution shift** — and it's the reason most medical AI never makes it into sustained clinical practice. Models learn a fixed function. The world refuses to stay fixed.
+
+The question I started with: *what if the model's topology itself could adapt?*
+
+## Enter PSMT: The Architecture
+
+Polymorphic Self-Modifying Transformers (PSMT) are a class of transformer architectures I've been developing that can dynamically modify both their weights **and their topology** — the actual structure of connections between layers — during inference and fine-tuning.
+
+This is distinct from:
+- **Standard fine-tuning**: updates weights, not structure
+- **Neural Architecture Search (NAS)**: searches structure offline, then fixes it
+- **Continual learning**: adapts to new tasks, but doesn't restructure
+
+PSMT does all three simultaneously and continuously.
+
+### Key Components
+
+**Meta-Reinforcement Controller**
+A lightweight RL agent monitors the model's performance signals in real time and dispatches topology modification actions — adding attention heads, pruning redundant pathways, adjusting skip connections. It's essentially a model that supervises another model.
+
+**Differentiable Architecture Search (DARTS) Integration**
+The topology modification operations are made differentiable through a continuous relaxation of architecture choices, allowing gradient-based optimization of structure alongside weights. This is what makes training stable.
+
+**Adaptive Inference Mechanism**
+At inference time, the model maintains an internal state that tracks domain characteristics. When it detects a distribution shift (based on entropy signals and representation drift metrics), it triggers a lightweight self-modification cycle before producing its output.
+
+## Results on Medical Benchmarks
+
+Tested against standard transformer baselines on multimodal medical datasets:
+
+| Metric | Baseline Transformer | PSMT |
+|--------|---------------------|------|
+| Diagnostic accuracy (stable) | 82.1% | 84.7% |
+| Diagnostic accuracy (after shift) | 61.4% | 84.6% |
+| Convergence speed | 1× | 2.6× faster |
+| Validation loss | baseline | 18% lower |
+| Catastrophic forgetting | 100% | 41% reduced |
+
+The shift-robustness result is the key finding. Baseline accuracy drops to 61.4% after a domain shift — PSMT holds at 84.6%. That's the clinical relevance: a model that doesn't fail silently when the hospital changes imaging equipment.
+
+## Current Status and Next Steps
+
+PSMT is being validated on cross-hospital datasets to demonstrate real-world generalization. The goal is autonomous clinical decision support — a diagnostic AI that improves itself over time rather than degrading.
+
+I presented this work at **IFA Berlin 2025** (Innovation For All) and am currently working toward a journal submission.
+
+If you're a clinical researcher or healthcare institution interested in adaptive diagnostic AI, I'd love to connect. This is exactly the kind of system that needs clinical partners to move from research to deployment.
+
+## Code
+
+The research codebase is not yet public pending paper submission, but I'll open-source the core architecture on GitHub after publication. Follow along at [@farad_jr on X](https://x.com/farad_jr).

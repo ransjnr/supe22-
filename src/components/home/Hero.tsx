@@ -20,8 +20,10 @@ const item = {
 const DOMAINS = [
   "AI Software Engineering",
   "Quantum ML",
-  "Physics-ML Synergy",
+  "Medical AI",
   "Research & Academia",
+  "AI Automation",
+  "Biomedical Engineering",
 ];
 
 export default function Hero() {
@@ -68,7 +70,7 @@ export default function Hero() {
               variants={item}
               className="text-lg md:text-xl text-primary-text/70 mb-2 font-medium"
             >
-              AI Engineer · Quantum ML Researcher · Physics-ML Pioneer
+              AI Engineer · Quantum ML Researcher · Technical Founder
             </motion.p>
 
             {/* Domain pills */}
@@ -85,10 +87,9 @@ export default function Hero() {
               variants={item}
               className="text-base md:text-lg text-primary-text/65 leading-relaxed max-w-2xl mb-10"
             >
-              I build AI systems at the frontier of quantum computing, physics simulation, and
-              machine learning. From variational quantum algorithms to physics-informed neural
-              networks — I connect the mathematical laws of nature with modern ML to solve
-              problems that classical approaches can&apos;t.
+              By day, I train machines to think. By night, I convince them I&apos;m still in charge.
+              I build production AI systems, research quantum biosensors, develop medical imaging AI,
+              and run engineering education programs — all from Kumasi, Ghana, for the world.
             </motion.p>
 
             {/* CTAs */}
@@ -114,10 +115,10 @@ export default function Hero() {
               <span className="text-xs text-primary-text/40 uppercase tracking-wider">Find me</span>
               <div className="flex gap-3">
                 {[
-                  { href: "https://github.com/ransfordoppong", icon: Github, label: "GitHub" },
-                  { href: "https://linkedin.com/in/ransfordoppong", icon: Linkedin, label: "LinkedIn" },
-                  { href: "https://twitter.com/ransfordoppong", icon: Twitter, label: "Twitter" },
-                  { href: "https://scholar.google.com", icon: BookOpen, label: "Google Scholar" },
+                  { href: "https://github.com/ransjnr", icon: Github, label: "GitHub" },
+                  { href: "https://linkedin.com/in/ransford-oppong-a249a9219", icon: Linkedin, label: "LinkedIn" },
+                  { href: "https://x.com/farad_jr", icon: Twitter, label: "X / Twitter" },
+                  { href: "/research", icon: BookOpen, label: "Research" },
                 ].map(({ href, icon: Icon, label }) => (
                   <a
                     key={href}
