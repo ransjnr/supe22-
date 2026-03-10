@@ -207,6 +207,16 @@ export const siteSettingsQuery = groq`
     papersPublished,
     countriesReached,
     bioHeading,
-    availabilityStatus
+    availabilityStatus,
+    contactEmail,
+    "profileImageUrl": profileImage.asset->url,
+    "profileImageAlt": profileImage.alt,
+    socialGithub,
+    socialLinkedin,
+    socialTwitter,
+    socialGoogleScholar,
+    appointmentBookingUrl,
+    bookingTitle,
+    bookingDescription
   }
 `;
