@@ -2,13 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Clock, Tag } from "lucide-react";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import remarkGfm from "remark-gfm";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { sanityFetch } from "@/sanity/client";
 import { postBySlugQuery, allPostSlugsQuery } from "@/sanity/queries";
-import { mdxComponents } from "@/lib/mdx-components";
+import { MDXRenderer } from "@/lib/mdx-renderer";
 import { formatDate } from "@/lib/utils";
 
 interface Props {
@@ -90,19 +86,7 @@ export default async function ResearchPost({ params }: Props) {
           {/* MDX Content */}
           <div className="prose prose-editorial prose-sm max-w-none">
             {post.body ? (
-              <MDXRemote
-                source={post.body}
-                components={mdxComponents}
-                options={{
-                  mdxOptions: {
-                    remarkPlugins: [remarkGfm],
-                    rehypePlugins: [
-                      rehypeSlug,
-                      [rehypeAutolinkHeadings, { behavior: "wrap" }],
-                    ],
-                  },
-                }}
-              />
+              <MDXRenderer source={post.body} />
             ) : (
               <p className="text-primary-text/50 italic">Content coming soon.</p>
             )}

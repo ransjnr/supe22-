@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Code2, Brain, Atom, Zap, BookOpen, MapPin, Mail } from "lucide-react";
+import Image from "next/image";
+import { Atom, MapPin, Mail } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import { sanityFetch } from "@/sanity/client";
-import { timelineQuery } from "@/sanity/queries";
+import { timelineQuery, siteSettingsQuery } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import type { TimelineEvent } from "@/types";
 
@@ -30,7 +31,14 @@ const TYPE_COLORS = {
 };
 
 export default async function AboutPage() {
-  const timeline = await sanityFetch<TimelineEvent[]>({ query: timelineQuery, tags: ["timelineEvent"] });
+  const [timeline, settings] = await Promise.all([
+    sanityFetch<TimelineEvent[]>({ query: timelineQuery, tags: ["timelineEvent"] }),
+    sanityFetch<{ profileImageUrl?: string; profileImageAlt?: string; contactEmail?: string } | null>({
+      query: siteSettingsQuery,
+      tags: ["siteSettings"],
+      fallback: null,
+    }),
+  ]);
 
   return (
     <div className="pt-24 pb-20">
@@ -38,15 +46,28 @@ export default async function AboutPage() {
       <section className="container-max section-padding mb-20">
         <AnimatedSection>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
-            {/* Photo placeholder */}
+            {/* Profile photo */}
             <div className="lg:col-span-2">
-              <div className="aspect-[4/5] bg-gradient-to-br from-accent/10 via-gold/5 to-accent/5 rounded-sm border border-border-subtle flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-24 h-24 rounded-full bg-accent/10 border-2 border-accent/20 flex items-center justify-center mx-auto mb-3">
-                    <Atom size={40} className="text-accent/40" strokeWidth={1} />
+              <div className="aspect-[4/5] rounded-sm border border-border-subtle overflow-hidden bg-gradient-to-br from-accent/10 via-gold/5 to-accent/5">
+                {settings?.profileImageUrl ? (
+                  <Image
+                    src={settings.profileImageUrl}
+                    alt={settings.profileImageAlt ?? "Ransford Oppong"}
+                    width={600}
+                    height={750}
+                    className="w-full h-full object-cover object-top"
+                    priority
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-24 h-24 rounded-full bg-accent/10 border-2 border-accent/20 flex items-center justify-center mx-auto mb-3">
+                        <Atom size={40} className="text-accent/40" strokeWidth={1} />
+                      </div>
+                      <p className="text-xs text-primary-text/30">Upload photo in Studio → Site Settings</p>
+                    </div>
                   </div>
-                  <p className="text-xs text-primary-text/30">Photo coming soon</p>
-                </div>
+                )}
               </div>
               <div className="mt-6 space-y-3">
                 <div className="flex items-center gap-2 text-sm text-primary-text/70">
@@ -55,8 +76,11 @@ export default async function AboutPage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-primary-text/70">
                   <Mail size={15} className="text-gold" />
-                  <a href="mailto:oppong.rans@gmail.com" className="hover:text-accent transition-colors">
-                    oppong.rans@gmail.com
+                  <a
+                    href={`mailto:${settings?.contactEmail ?? "oppong.rans@gmail.com"}`}
+                    className="hover:text-accent transition-colors"
+                  >
+                    {settings?.contactEmail ?? "oppong.rans@gmail.com"}
                   </a>
                 </div>
               </div>

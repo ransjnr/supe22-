@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import LiveChat from "@/components/layout/LiveChat";
+import FloatingHub from "@/components/hub/FloatingHub";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -85,6 +86,7 @@ export default function RootLayout({
         <main className="min-h-screen">{children}</main>
         <Footer />
         <LiveChat />
+        <FloatingHub />
       </body>
     </html>
   );
