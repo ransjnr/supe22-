@@ -5,9 +5,9 @@ import FeaturedProjects from "@/components/home/FeaturedProjects";
 import LatestResearch from "@/components/home/LatestResearch";
 import SocialProof from "@/components/home/SocialProof";
 import NewsletterCTA from "@/components/home/NewsletterCTA";
-import { getAllPosts } from "@/lib/mdx";
-import { projects } from "@/content/data/projects";
-import { stats } from "@/content/data/stats";
+import { sanityFetch } from "@/sanity/client";
+import { featuredProjectsQuery, latestPostsQuery, siteSettingsQuery } from "@/sanity/queries";
+import type { Project, ResearchPostMeta, SiteStats } from "@/types";
 
 export const metadata: Metadata = {
   title: "Ransford Oppong — AI Engineer · Quantum ML · Physics-ML Researcher",
@@ -15,9 +15,19 @@ export const metadata: Metadata = {
     "AI Software Engineer and Researcher specializing in Machine Learning, Quantum ML, and Physics-informed Neural Networks. Available for consulting, research collaborations, and speaking.",
 };
 
-export default function HomePage() {
-  const latestPosts = getAllPosts().slice(0, 3);
-  const featuredProjects = projects.filter((p) => p.featured).slice(0, 4);
+export default async function HomePage() {
+  const [featuredProjects, latestPosts, siteSettings] = await Promise.all([
+    sanityFetch<Project[]>({ query: featuredProjectsQuery, tags: ["project"] }),
+    sanityFetch<ResearchPostMeta[]>({ query: latestPostsQuery, tags: ["researchPost"] }),
+    sanityFetch<SiteStats | null>({ query: siteSettingsQuery, tags: ["siteSettings"], fallback: null }),
+  ]);
+
+  const stats: SiteStats = siteSettings ?? {
+    yearsExperience: 4,
+    projectsCompleted: 20,
+    papersPublished: 3,
+    countriesReached: 5,
+  };
 
   return (
     <>

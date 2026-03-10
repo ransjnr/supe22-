@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Trophy, Star, Target, Gift } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import { achievements } from "@/content/data/achievements";
+import { sanityFetch } from "@/sanity/client";
+import { achievementsQuery } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import type { Achievement } from "@/types";
 
@@ -19,8 +20,9 @@ const TYPE_CONFIG: Record<Achievement["type"], { icon: typeof Trophy; color: str
   grant: { icon: Gift, color: "text-blue-600", bg: "bg-blue-50" },
 };
 
-export default function AchievementsPage() {
-  const sorted = [...achievements].sort((a, b) => b.year.localeCompare(a.year));
+export default async function AchievementsPage() {
+  const achievements = await sanityFetch<Achievement[]>({ query: achievementsQuery, tags: ["achievement"] });
+  const sorted = achievements;
 
   return (
     <div className="pt-24 pb-20">

@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getAllSlugs } from "@/lib/mdx";
+import { sanityFetch } from "@/sanity/client";
+import { allPostSlugsQuery } from "@/sanity/queries";
 
 const BASE_URL = "https://ransfordoppong.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     { route: "/", priority: 1.0, changeFrequency: "weekly" as const },
     { route: "/about", priority: 0.9, changeFrequency: "monthly" as const },
@@ -23,7 +24,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority,
   }));
 
-  const researchRoutes = getAllSlugs().map((slug) => ({
+  const slugs = await sanityFetch<{ slug: string }[]>({ query: allPostSlugsQuery });
+  const researchRoutes = slugs.map(({ slug }) => ({
     url: `${BASE_URL}/research/${slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,

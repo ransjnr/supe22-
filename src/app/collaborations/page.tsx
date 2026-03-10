@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Users, Clock, ArrowRight } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import { collaborations } from "@/content/data/collaborations";
+import { sanityFetch } from "@/sanity/client";
+import { collaborationsQuery } from "@/sanity/queries";
+import type { CollaborationOpportunity } from "@/types";
 
 export const metadata: Metadata = {
   title: "Collaborations",
@@ -11,7 +13,8 @@ export const metadata: Metadata = {
     "Open research collaboration opportunities with Ransford Oppong in Quantum ML, Physics-ML, and AI for science.",
 };
 
-export default function CollaborationsPage() {
+export default async function CollaborationsPage() {
+  const collaborations = await sanityFetch<CollaborationOpportunity[]>({ query: collaborationsQuery, tags: ["collaboration"] });
   const open = collaborations.filter((c) => c.open);
 
   return (

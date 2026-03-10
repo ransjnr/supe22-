@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import ProjectsGrid from "@/components/projects/ProjectsGrid";
-import { projects } from "@/content/data/projects";
+import { sanityFetch } from "@/sanity/client";
+import { projectsQuery } from "@/sanity/queries";
+import type { Project } from "@/types";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -10,7 +12,9 @@ export const metadata: Metadata = {
     "Explore Ransford Oppong's projects spanning AI engineering, quantum machine learning, physics-informed neural networks, and full-stack development.",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await sanityFetch<Project[]>({ query: projectsQuery, tags: ["project"] });
+
   return (
     <div className="pt-24 pb-20">
       <div className="container-max section-padding">

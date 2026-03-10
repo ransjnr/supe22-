@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { sendContactEmail } from "@/app/actions/contact";
 import type { ContactFormData } from "@/types";
 
 const contactSchema = z.object({
@@ -20,9 +21,8 @@ interface ContactFormProps {
 }
 
 export default function ContactForm({ defaultType = "general" }: ContactFormProps) {
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">(
-    "idle"
-  );
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const {
     register,
@@ -36,15 +36,18 @@ export default function ContactForm({ defaultType = "general" }: ContactFormProp
 
   const onSubmit = async (data: ContactFormData) => {
     setSubmitStatus("loading");
+    setErrorMessage("");
     try {
-      // In production: integrate with EmailJS or a Route Handler
-      // Example EmailJS integration:
-      // await emailjs.send(SERVICE_ID, TEMPLATE_ID, data, PUBLIC_KEY);
-      console.log("Form submitted:", data);
-      await new Promise((r) => setTimeout(r, 1000)); // Simulate API call
-      setSubmitStatus("success");
-      reset();
+      const result = await sendContactEmail(data);
+      if (result.success) {
+        setSubmitStatus("success");
+        reset();
+      } else {
+        setErrorMessage(result.error);
+        setSubmitStatus("error");
+      }
     } catch {
+      setErrorMessage("Unexpected error. Please email me directly at oppong.rans@gmail.com");
       setSubmitStatus("error");
     }
   };
@@ -57,7 +60,8 @@ export default function ContactForm({ defaultType = "general" }: ContactFormProp
         </div>
         <h3 className="font-serif text-xl text-primary-text">Message sent!</h3>
         <p className="text-primary-text/70 text-sm max-w-xs">
-          Thank you for reaching out. I&apos;ll get back to you within 24–48 hours.
+          Thank you for reaching out. You&apos;ll receive a confirmation email shortly, and I&apos;ll
+          reply within 24–48 hours.
         </p>
         <button
           onClick={() => setSubmitStatus("idle")}
@@ -120,7 +124,7 @@ export default function ContactForm({ defaultType = "general" }: ContactFormProp
             id="subject"
             type="text"
             {...register("subject")}
-            placeholder="What&apos;s this about?"
+            placeholder="What's this about?"
             className="w-full px-4 py-2.5 text-sm border border-border-subtle rounded-sm
                        focus:outline-none focus:ring-2 focus:ring-gold/40 focus:border-gold
                        placeholder:text-gray-400 bg-white"
@@ -170,9 +174,9 @@ export default function ContactForm({ defaultType = "general" }: ContactFormProp
 
       {/* Error banner */}
       {submitStatus === "error" && (
-        <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-sm text-sm text-red-700">
-          <AlertCircle size={16} />
-          Something went wrong. Please try again or email me directly.
+        <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-sm text-sm text-red-700">
+          <AlertCircle size={16} className="shrink-0 mt-0.5" />
+          <span>{errorMessage || "Something went wrong. Please try again or email me directly."}</span>
         </div>
       )}
 

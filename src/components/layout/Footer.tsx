@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { Github, Linkedin, Twitter, BookOpen, Mail, Atom } from "lucide-react";
 import NewsletterForm from "./NewsletterForm";
-import { getAllPosts } from "@/lib/mdx";
+import { sanityFetch } from "@/sanity/client";
+import { latestPostsQuery } from "@/sanity/queries";
 import { formatDateShort } from "@/lib/utils";
+import type { ResearchPostMeta } from "@/types";
 
 const SOCIAL_LINKS = [
   { href: "https://github.com/ransfordoppong", icon: Github, label: "GitHub" },
@@ -24,8 +26,8 @@ const QUICK_LINKS = [
   { label: "Contact", href: "/contact" },
 ];
 
-export default function Footer() {
-  const latestPosts = getAllPosts().slice(0, 3);
+export default async function Footer() {
+  const latestPosts = await sanityFetch<ResearchPostMeta[]>({ query: latestPostsQuery, tags: ["researchPost"] });
 
   return (
     <footer className="bg-primary-text text-white/80 mt-20">

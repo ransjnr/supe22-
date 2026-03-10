@@ -6,7 +6,8 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import { getAllSlugs, getPostBySlug } from "@/lib/mdx";
+import { sanityFetch } from "@/sanity/client";
+import { postBySlugQuery, allPostSlugsQuery } from "@/sanity/queries";
 import { mdxComponents } from "@/lib/mdx-components";
 import { formatDate } from "@/lib/utils";
 
@@ -15,39 +16,36 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
+  const slugs = await sanityFetch<{ slug: string }[]>({ query: allPostSlugsQuery });
+  return slugs.map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  try {
-    const { meta } = getPostBySlug(params.slug);
-    return {
-      title: meta.title,
-      description: meta.summary,
-      openGraph: {
-        title: meta.title,
-        description: meta.summary,
-        type: "article",
-        publishedTime: meta.date,
-        tags: meta.tags,
-      },
-    };
-  } catch {
-    return { title: "Post not found" };
-  }
+  const post = await sanityFetch<{ title: string; summary: string; date: string; tags: string[] } | null>({
+    query: postBySlugQuery,
+    params: { slug: params.slug },
+  });
+  if (!post) return { title: "Post not found" };
+  return {
+    title: post.title,
+    description: post.summary,
+    openGraph: {
+      title: post.title,
+      description: post.summary,
+      type: "article",
+      publishedTime: post.date,
+      tags: post.tags,
+    },
+  };
 }
 
-export default function ResearchPost({ params }: Props) {
-  let meta;
-  let source;
+export default async function ResearchPost({ params }: Props) {
+  const post = await sanityFetch<{ slug: string; title: string; date: string; summary: string; tags: string[]; category: string; body: string; readingTime: number } | null>({
+    query: postBySlugQuery,
+    params: { slug: params.slug },
+  });
 
-  try {
-    const result = getPostBySlug(params.slug);
-    meta = result.meta;
-    source = result.source;
-  } catch {
-    notFound();
-  }
+  if (!post) notFound();
 
   return (
     <div className="pt-24 pb-20">
@@ -64,23 +62,23 @@ export default function ResearchPost({ params }: Props) {
         <article className="max-w-3xl">
           {/* Header */}
           <header className="mb-10 pb-8 border-b border-border-subtle">
-            <p className="section-label mb-3">{meta.category}</p>
+            <p className="section-label mb-3">{post.category}</p>
             <h1 className="font-serif text-3xl md:text-4xl text-primary-text leading-tight mb-4">
-              {meta.title}
+              {post.title}
             </h1>
-            <p className="text-base text-primary-text/65 leading-relaxed mb-6">{meta.summary}</p>
+            <p className="text-base text-primary-text/65 leading-relaxed mb-6">{post.summary}</p>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-primary-text/50">
-              <time dateTime={meta.date}>{formatDate(meta.date)}</time>
+              <time dateTime={post.date}>{formatDate(post.date)}</time>
               <span className="flex items-center gap-1.5">
                 <Clock size={13} />
-                {meta.readingTime}
+                {`${post.readingTime} min read`}
               </span>
             </div>
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mt-4">
-              {meta.tags.map((tag) => (
+              {post.tags.map((tag) => (
                 <span key={tag} className="tag-pill">
                   <Tag size={10} className="mr-1" />
                   {tag}
@@ -91,19 +89,23 @@ export default function ResearchPost({ params }: Props) {
 
           {/* MDX Content */}
           <div className="prose prose-editorial prose-sm max-w-none">
-            <MDXRemote
-              source={source}
-              components={mdxComponents}
-              options={{
-                mdxOptions: {
-                  remarkPlugins: [remarkGfm],
-                  rehypePlugins: [
-                    rehypeSlug,
-                    [rehypeAutolinkHeadings, { behavior: "wrap" }],
-                  ],
-                },
-              }}
-            />
+            {post.body ? (
+              <MDXRemote
+                source={post.body}
+                components={mdxComponents}
+                options={{
+                  mdxOptions: {
+                    remarkPlugins: [remarkGfm],
+                    rehypePlugins: [
+                      rehypeSlug,
+                      [rehypeAutolinkHeadings, { behavior: "wrap" }],
+                    ],
+                  },
+                }}
+              />
+            ) : (
+              <p className="text-primary-text/50 italic">Content coming soon.</p>
+            )}
           </div>
 
           {/* Footer */}

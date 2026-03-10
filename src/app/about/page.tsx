@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { Code2, Brain, Atom, Zap, BookOpen, MapPin, Mail } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import { timeline } from "@/content/data/timeline";
+import { sanityFetch } from "@/sanity/client";
+import { timelineQuery } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
+import type { TimelineEvent } from "@/types";
 
 export const metadata: Metadata = {
   title: "About",
@@ -27,7 +29,9 @@ const TYPE_COLORS = {
   achievement: "border-emerald-400 bg-emerald-50",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const timeline = await sanityFetch<TimelineEvent[]>({ query: timelineQuery, tags: ["timelineEvent"] });
+
   return (
     <div className="pt-24 pb-20">
       {/* Hero */}

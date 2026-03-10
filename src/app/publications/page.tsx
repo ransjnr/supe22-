@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { ExternalLink, FileText } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import { publications } from "@/content/data/publications";
+import { sanityFetch } from "@/sanity/client";
+import { publicationsQuery } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import type { Publication } from "@/types";
 
@@ -93,7 +94,8 @@ function PublicationItem({ pub }: { pub: Publication }) {
   );
 }
 
-export default function PublicationsPage() {
+export default async function PublicationsPage() {
+  const publications = await sanityFetch<Publication[]>({ query: publicationsQuery, tags: ["publication"] });
   const grouped = TYPE_ORDER.reduce(
     (acc, type) => {
       const group = publications.filter((p) => p.type === type);

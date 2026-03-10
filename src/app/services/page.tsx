@@ -4,8 +4,10 @@ import Link from "next/link";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import ContactForm from "@/components/shared/ContactForm";
-import { services } from "@/content/data/services";
+import { sanityFetch } from "@/sanity/client";
+import { servicesQuery } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
+import type { ServicePackage } from "@/types";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -13,7 +15,9 @@ export const metadata: Metadata = {
     "Hire Ransford Oppong for AI/ML consulting, end-to-end ML system development, and research partnerships in Quantum ML and Physics-informed AI.",
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await sanityFetch<ServicePackage[]>({ query: servicesQuery, tags: ["service"] });
+
   return (
     <div className="pt-24 pb-20">
       <div className="container-max section-padding">

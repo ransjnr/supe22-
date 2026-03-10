@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
 import ResearchList from "@/components/research/ResearchList";
-import { getAllPosts } from "@/lib/mdx";
+import { sanityFetch } from "@/sanity/client";
+import { allPostsQuery } from "@/sanity/queries";
+import type { ResearchPostMeta } from "@/types";
 
 export const metadata: Metadata = {
   title: "Research",
@@ -10,8 +12,8 @@ export const metadata: Metadata = {
     "Daily R&D log and research deep dives on Quantum ML, Physics-informed Neural Networks, AI engineering, and frontier machine learning from Ransford Oppong.",
 };
 
-export default function ResearchPage() {
-  const posts = getAllPosts();
+export default async function ResearchPage() {
+  const posts = await sanityFetch<ResearchPostMeta[]>({ query: allPostsQuery, tags: ["researchPost"] });
   const categories = [...new Set(posts.map((p) => p.category))];
 
   return (

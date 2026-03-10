@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { ExternalLink } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import { initiatives } from "@/content/data/initiatives";
+import { sanityFetch } from "@/sanity/client";
+import { initiativesQuery } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
+import type { Initiative } from "@/types";
 
 export const metadata: Metadata = {
   title: "Initiatives",
@@ -17,7 +19,9 @@ const STATUS_STYLES = {
   completed: "bg-gray-100 text-gray-600 border-gray-200",
 };
 
-export default function InitiativesPage() {
+export default async function InitiativesPage() {
+  const initiatives = await sanityFetch<Initiative[]>({ query: initiativesQuery, tags: ["initiative"] });
+
   return (
     <div className="pt-24 pb-20">
       <div className="container-max section-padding">

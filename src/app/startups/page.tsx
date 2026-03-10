@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { ExternalLink, Rocket } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import AnimatedSection from "@/components/shared/AnimatedSection";
-import { startups } from "@/content/data/startups";
+import { sanityFetch } from "@/sanity/client";
+import { startupsQuery } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
+import type { Startup } from "@/types";
 
 export const metadata: Metadata = {
   title: "Startups",
@@ -18,7 +20,9 @@ const STATUS_STYLES = {
   stealth: "bg-purple-50 text-purple-700 border-purple-200",
 };
 
-export default function StartupsPage() {
+export default async function StartupsPage() {
+  const startups = await sanityFetch<Startup[]>({ query: startupsQuery, tags: ["startup"] });
+
   return (
     <div className="pt-24 pb-20">
       <div className="container-max section-padding">
