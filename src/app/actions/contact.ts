@@ -40,12 +40,19 @@ export async function sendContactEmail(
   }
 
   const resend = new Resend(apiKey);
-  const fromEmail = process.env.NEXT_PUBLIC_FROM_EMAIL || "onboarding@resend.dev";
+  // Use onboarding@resend.dev while the custom domain is not yet verified.
+  // Once ransford.tech is verified in the Resend dashboard, set
+  // NEXT_PUBLIC_FROM_EMAIL=hello@ransford.tech in .env.local.
+  const customFrom = process.env.NEXT_PUBLIC_FROM_EMAIL;
+  const fromEmail =
+    customFrom && !customFrom.includes("ransford.tech")
+      ? customFrom
+      : "onboarding@resend.dev";
   const toEmail = process.env.CONTACT_NOTIFICATION_EMAIL || "oppong.rans@gmail.com";
 
   try {
     // 1. Send notification to Ransford
-    await resend.emails.send({
+    const notifResult = await resend.emails.send({
       from: `Portfolio Contact <${fromEmail}>`,
       to: [toEmail],
       replyTo: email,
@@ -53,13 +60,22 @@ export async function sendContactEmail(
       react: ContactNotification({ name, email, subject, message, type }),
     });
 
-    // 2. Send auto-reply to the sender
-    await resend.emails.send({
+    if (notifResult.error) {
+      console.error("Resend notification error:", notifResult.error);
+      return { success: false, error: "Failed to send message. Please try again or email me directly." };
+    }
+
+    // 2. Auto-reply — best-effort, don't fail the whole action if this errors
+    const replyResult = await resend.emails.send({
       from: `Ransford Oppong <${fromEmail}>`,
       to: [email],
       subject: `Got your message, ${name.split(" ")[0]}! 👋`,
       react: ContactAutoReply({ name }),
     });
+
+    if (replyResult.error) {
+      console.warn("Auto-reply failed (non-fatal):", replyResult.error);
+    }
 
     return { success: true };
   } catch (err) {

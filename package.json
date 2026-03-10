@@ -11,6 +11,7 @@
     "studio": "sanity dev"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "@emailjs/browser": "^4.4.1",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-dialog": "^1.1.4",
