@@ -93,7 +93,7 @@ export default function ChatbotPanel({ onClose }: { onClose: () => void }) {
             </div>
             <div>
               <p className="text-sm font-semibold leading-tight">AI Assistant</p>
-              <p className="text-xs text-white/65">Ask about Ransford's work</p>
+              <p className="text-xs text-white/65">Ask about Ransford&apos;s work</p>
             </div>
           </div>
           <div className="flex gap-1">
