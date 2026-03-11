@@ -1,5 +1,8 @@
 import { createClient, type QueryParams } from "next-sanity";
-import { apiVersion, dataset, projectId } from "./env";
+import { apiVersion, dataset, projectId as rawProjectId } from "./env";
+
+// Strip whitespace/control characters that can sneak in via env vars on Windows
+const projectId = rawProjectId.trim().replace(/[^-a-z0-9]/g, "");
 
 // Lazily created — only instantiated when projectId is present
 let _client: ReturnType<typeof createClient> | null = null;
