@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import LiveChat from "@/components/layout/LiveChat";
-import FloatingHub from "@/components/hub/FloatingHub";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -82,11 +78,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="bg-background text-primary-text font-sans antialiased">
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
-        <LiveChat />
-        <FloatingHub />
+        {children}
       </body>
     </html>
   );

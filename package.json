@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "npx tsx scripts/seed-sanity.ts",
-    "studio": "sanity dev"
+    "studio": "sanity dev --config src/sanity.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
